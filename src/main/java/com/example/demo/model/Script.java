@@ -1,16 +1,21 @@
 package com.example.demo.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Script {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,16 +23,25 @@ public class Script {
     @Enumerated(EnumType.STRING)
     private ScriptStatus status;
     private final LocalDateTime startTime = LocalDateTime.now();
-    private LocalDateTime processingTime;
+    private Duration processingTime;
     private String body;
-    private String stdout; // todo determine data type if it need in general/
-    private String stderr; // todo determine data type if it need in general/
+    @Lob
+    @Column(length = 100000)
+    private String stdout;
+    @Lob
+    @Column(length = 100000)
+    private String stderr;
 
     public enum ScriptStatus {
         EXECUTING,
         COMPLETED,
         STOPPED,
         FAILED,
-        QUEUE
+        QUEUED
+    }
+
+    public Script(String body, ScriptStatus status) {
+        this.body = body;
+        this.status = status;
     }
 }
