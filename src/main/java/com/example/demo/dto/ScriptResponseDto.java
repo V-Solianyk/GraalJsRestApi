@@ -11,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ScriptResponseDto {
+    private Long id;
     @Enumerated(EnumType.STRING)
     private Script.ScriptStatus status;
     private final LocalDateTime startTime = LocalDateTime.now();
