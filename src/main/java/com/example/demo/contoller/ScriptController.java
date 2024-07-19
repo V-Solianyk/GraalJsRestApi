@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,7 +48,7 @@ public class ScriptController {
         return scriptService.getScriptById(id);
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}")
     @Operation(summary = "Stop a script", description = "Forcibly stop a running script by its ID")
     public void stopScript(@PathVariable Long id) {
         scriptService.stopScriptById(id);
