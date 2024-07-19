@@ -32,9 +32,8 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     public String executeScript(ScriptRequestDto body, boolean blocking) {
-        final Script script = repository.save(new Script(body.getBody(),
+        Script script = repository.save(new Script(body.getBody(),
                 Script.ScriptStatus.QUEUED));
-
         Future<?> future = executorService.submit(() -> {
             Script localScript = script;
             localScript.setStatus(Script.ScriptStatus.EXECUTING);
@@ -87,14 +86,14 @@ public class ScriptServiceImpl implements ScriptService {
     @Override
     public ScriptResponseDto getScriptById(Long id) {
         return repository.findById(id).map(mapper::toDto)
-                .orElseThrow(() -> new NoSuchElementException("Scrip doesn't exist"
+                .orElseThrow(() -> new NoSuchElementException("Script doesn't exist"
                         + " by this id " + id));
     }
 
     @Override
     public void stopScriptById(Long id) {
         Script script = repository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Scrip doesn't exist"
+                .orElseThrow(() -> new NoSuchElementException("Script doesn't exist"
                         + " by this id " + id));
         script.setStatus(Script.ScriptStatus.STOPPED);
         repository.save(script);

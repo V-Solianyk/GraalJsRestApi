@@ -9,5 +9,4 @@ public class GraalJsRestApiApplication {
     public static void main(String[] args) {
         SpringApplication.run(GraalJsRestApiApplication.class, args);
     }
-
 }

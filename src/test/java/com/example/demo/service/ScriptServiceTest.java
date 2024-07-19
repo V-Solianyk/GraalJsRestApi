@@ -10,7 +10,9 @@ import com.example.demo.dto.ScriptResponseDto;
 import com.example.demo.mapper.ScriptMapper;
 import com.example.demo.model.Script;
 import com.example.demo.repository.ScriptRepository;
+import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -59,6 +61,39 @@ class ScriptServiceTest {
 
         Assertions.assertEquals("Script execution initiated", result);
         verify(repository, times(3)).save(any(Script.class));
+    }
+
+    @Test
+    void getScripts_StatusFilter_ReturnsEmptyList() {
+        Pageable pageable = PageRequest.of(0, 5);
+
+        when(repository.findByStatus(Script.ScriptStatus.QUEUED, pageable))
+                .thenReturn(Collections.emptyList());
+
+        List<ScriptResponseDto> result = scriptService
+                .getScripts(Optional.of(Script.ScriptStatus.QUEUED), pageable);
+
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void getScriptById_InvalidId_ThrowsNoSuchElementException() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = Assertions.assertThrows(NoSuchElementException.class,
+                () -> scriptService.getScriptById(1L));
+
+        Assertions.assertEquals("Script doesn't exist by this id 1", exception.getMessage());
+    }
+
+    @Test
+    void stopScriptById_InvalidId_ThrowsNoSuchElementException() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = Assertions.assertThrows(NoSuchElementException.class,
+                () -> scriptService.stopScriptById(1L));
+
+        Assertions.assertEquals("Script doesn't exist by this id 1", exception.getMessage());
     }
 
     @Test
